@@ -16,7 +16,7 @@ $rsa = new Pikirasa\RSA();
 $data = 'abc123';
 $encrypted = $rsa->encrypt('file://path/to/public.pem', $data);
 $decrypted = $rsa->decrypt('file://path/to/private.pem', $encrypted);
-var_dump($data); // 'abc123'
+var_dump($decrypted); // 'abc123'
 ```
 
 You can also use the string contents of your public and private keys instead of a file stream location:
@@ -69,5 +69,5 @@ LH0HIC1HAtS6Wztd2Taoqwe5Xm75YW0elo4OEqiAfubAC85Ec4zfxw==
 $data = 'abc123';
 $encrypted = $rsa->encrypt($publicKey, $data);
 $decrypted = $rsa->decrypt($privateKey, $encrypted);
-var_dump($data); // 'abc123'
+var_dump($decrypted); // 'abc123'
 ```
