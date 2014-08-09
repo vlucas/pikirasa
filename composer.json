@@ -1,0 +1,25 @@
+{
+    "name": "vlucas/pikirasa",
+    "type": "library",
+    "description": "PKI public/private RSA key encryption using the OpenSSL extension",
+    "keywords": ["pki", "rsa", "encryption", "private key", "public key", "crypt", "cryptography", "openssl"],
+    "homepage": "https://github.com/vlucas/pikirasa",
+    "license": "BSD",
+    "authors": [
+        {
+            "name": "Vance Lucas",
+            "email": "vance@vancelucas.com",
+            "homepage": "http://www.vancelucas.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.4",
+        "ext-openssl": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Pikirasa": "lib/"
+        }
+    }
+}
