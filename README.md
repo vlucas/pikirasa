@@ -9,8 +9,8 @@ Pikirasa is just "PKI RSA" with a few exta vowels thrown in. Also, I created thi
 Example Usage
 -------------
 
+All your need is the full path to your public and/or private key files:
 ```php
-// Grab a new instance
 $rsa = new Pikirasa\RSA();
 
 $data = 'abc123';
@@ -64,7 +64,7 @@ pn6vfQKBgQCHkDnpoNZc2m1JksDiuiRjZORKMYz8he8seoUMPQ+iQze66XSRp5JL
 oGZrU7JzCxuyoeA/4z36UN5WXmeS3bqh6SinrPQKt7rMkK1NQYcDUijPBMt0afO+
 LH0HIC1HAtS6Wztd2Taoqwe5Xm75YW0elo4OEqiAfubAC85Ec4zfxw==
 -----END RSA PRIVATE KEY-----
-;
+';
 
 $data = 'abc123';
 $encrypted = $rsa->encrypt($publicKey, $data);
