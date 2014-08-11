@@ -3,12 +3,42 @@ namespace Pikirasa;
 
 class RSA
 {
-    public function encrypt($key, $data)
+    protected $publicKeyFile;
+    protected $privateKeyFile;
+    protected $password;
+
+    public function __construct($publicKeyFile, $privateKeyFile, $password = null)
+    {
+        $this->publicKeyFile = $publicKeyFile;
+        $this->privateKeyFile = $privateKeyFile;
+        $this->password = $password;
+    }
+
+    /**
+     * Set password to be used during encryption and decryption
+     *
+     * @param string $password Certificate password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * Encrypt data with provided public certificate
+     *
+     * @param string $data Data to encrypt
+     * @return string Encrypted data
+     *
+     * @throws Pikirasa\Exception
+     */
+    public function encrypt($data)
     {
         // Load public key
-        $publicKey = openssl_pkey_get_public($key);
+        $publicKey = openssl_pkey_get_public($this->publicKeyFile);
+
         if (!$publicKey) {
-            throw new Exception("OpenSSL: Unable to get public key for encryption");
+            throw new Exception("OpenSSL: Unable to get public key for encryption. Is the location correct? Does this key require a password?");
         }
 
         $success = openssl_public_encrypt($data, $encryptedData, $publicKey);
@@ -20,9 +50,17 @@ class RSA
         return $encryptedData;
     }
 
-    public function decrypt($key, $data)
+    /**
+     * Decrypt data with provided private certificate
+     *
+     * @param string $data Data to encrypt
+     * @return string Decrypted data
+     *
+     * @throws Pikirasa\Exception
+     */
+    public function decrypt($data)
     {
-        $privateKey = openssl_pkey_get_private($key);
+        $privateKey = openssl_pkey_get_private($this->privateKeyFile, $this->password);
         if (!$privateKey) {
             throw new Exception("OpenSSL: Unable to get private key for decryption");
         }
