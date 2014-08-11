@@ -11,19 +11,17 @@ Example Usage
 
 All your need is the full path to your public and/or private key files:
 ```php
-$rsa = new Pikirasa\RSA();
+$rsa = new Pikirasa\RSA('file://path/to/public.pem', 'file://path/to/private.pem');
 
 $data = 'abc123';
-$encrypted = $rsa->encrypt('file://path/to/public.pem', $data);
-$decrypted = $rsa->decrypt('file://path/to/private.pem', $encrypted);
+$encrypted = $rsa->encrypt($data);
+$decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
 
 You can also use the string contents of your public and private keys instead of a file stream location:
 
 ```php
-$rsa = new Pikirasa\RSA();
-
 $publicKey = '
 -----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7o9A47JuO3wgZ/lbOIOs
@@ -66,8 +64,25 @@ LH0HIC1HAtS6Wztd2Taoqwe5Xm75YW0elo4OEqiAfubAC85Ec4zfxw==
 -----END RSA PRIVATE KEY-----
 ';
 
+$rsa = new Pikirasa\RSA($publicKey, $privateKey);
+
 $data = 'abc123';
-$encrypted = $rsa->encrypt($publicKey, $data);
-$decrypted = $rsa->decrypt($privateKey, $encrypted);
+$encrypted = $rsa->encrypt($data);
+$decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
+
+### Using Certificates with a Passphrase
+
+The `Pikirasa\RSA` class accepts an optional 3rd parameter if your private key
+is protected with a password.
+
+```php
+$rsa = new Pikirasa\RSA($publicKey, $privateKey, 'certificate_password');
+
+$data = 'abc123';
+$encrypted = $rsa->encrypt($data);
+$decrypted = $rsa->decrypt($encrypted);
+var_dump($decrypted); // 'abc123'
+```
+
