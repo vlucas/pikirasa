@@ -1,10 +1,16 @@
 Pikirasa
 ========
-Easy PKI public/private RSA key encryption using the OpenSSL extension
+Easy PKI public/private RSA key encryption using the OpenSSL extension.
 
 What's up with the name?
 ------------------------
 Pikirasa is just "PKI RSA" with a few exta vowels thrown in. Also, I created this project late on a Friday night, so I just couldn't bring myself to name it anything serious.
+
+What is this for?
+-----------------
+Pikirasa is very lightweight wrapper around PHP's OpenSSL extension for encrypting and decrypting data with a known public/private key pair. It requires that you have the [OpenSSL extension](http://php.net/openssl) installed, and that your certificates have already been generated.
+
+_Pikirasa is not a general purpose or all-encompassing encryption library_. If you need more encryption options, maximum system compatability, or if you need to generate RSA keys programatically, take a look at [phpseclib](https://github.com/phpseclib/phpseclib).
 
 Example Usage
 -------------
