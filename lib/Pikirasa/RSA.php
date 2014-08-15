@@ -7,7 +7,7 @@ class RSA
     protected $privateKeyFile;
     protected $password;
 
-    public function __construct($publicKeyFile, $privateKeyFile, $password = null)
+    public function __construct($publicKeyFile, $privateKeyFile = null, $password = null)
     {
         $this->publicKeyFile = $publicKeyFile;
         $this->privateKeyFile = $privateKeyFile;
@@ -60,6 +60,10 @@ class RSA
      */
     public function decrypt($data)
     {
+        if ($this->privateKeyFile === null) {
+            throw new Exception("Unable to decrypt: No private key provided.");
+        }
+
         $privateKey = openssl_pkey_get_private($this->privateKeyFile, $this->password);
         if (!$privateKey) {
             throw new Exception("OpenSSL: Unable to get private key for decryption");

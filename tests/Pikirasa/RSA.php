@@ -71,4 +71,23 @@ class RSATest extends PHPUnit_Framework_TestCase
         $encrypted = $rsa->encrypt($data);
         $decrypted = $rsa->decrypt($encrypted);
     }
+
+    public function testEncryptWithoutPrivateKey()
+    {
+        $rsa = new RSA($this->publicKeyFile);
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $this->assertNotSame($encrypted, $data);
+    }
+
+    /**
+     * @expectedException Pikirasa\Exception
+     */
+    public function testDecryptRequiresPrivateCertFile()
+    {
+        $rsa = new RSA($this->publicKeyFile);
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $decrypted = $rsa->decrypt($encrypted);
+    }
 }
