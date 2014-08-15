@@ -90,4 +90,17 @@ class RSATest extends PHPUnit_Framework_TestCase
         $encrypted = $rsa->encrypt($data);
         $decrypted = $rsa->decrypt($encrypted);
     }
+
+    public function testBase64EncryptDecrypt()
+    {
+        $rsa = new RSA($this->publicKeyFile, $this->privateKeyFile);
+        $data = 'abc123';
+        $encrypted = $rsa->base64Encrypt($data);
+
+        // Ensure there are no unicode characters
+        $this->assertRegExp('/[\x00-\x7F]/', $encrypted);
+
+        $decrypted = $rsa->base64Decrypt($encrypted);
+        $this->assertSame($decrypted, $data);
+    }
 }

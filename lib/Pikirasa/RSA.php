@@ -51,6 +51,17 @@ class RSA
     }
 
     /**
+     * Encrypt data and then base64_encode it
+     *
+     * @param string $data Data to encrypt
+     * @return string Base64-encrypted data
+     */
+    public function base64Encrypt($data)
+    {
+        return base64_encode($this->encrypt($data));
+    }
+
+    /**
      * Decrypt data with provided private certificate
      *
      * @param string $data Data to encrypt
@@ -76,5 +87,16 @@ class RSA
         }
 
         return $decryptedData;
+    }
+
+    /**
+     * base64_decode data and then decrypt it
+     *
+     * @param string $data Base64-encoded data to decrypt
+     * @return string Decrypted data
+     */
+    public function base64Decrypt($data)
+    {
+        return $this->decrypt(base64_decode($data));
     }
 }
