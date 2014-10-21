@@ -92,3 +92,16 @@ $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
 
+### Working with base64-encoded strings
+
+A common pattern if you want to deal with plain strings rather than binary data
+is to encode encryped data with base64. If you need to do that, both `encrypt`
+and `decrypt` have a base64 counterpart you can use :
+
+```php
+$rsa = new Pikirasa\RSA($publicKey, $privateKey);
+
+$data = 'abc123';
+$encrypted = $rsa->base64Encrypt($data);
+$decrypted = $rsa->base64Decrypt($encrypted);
+var_dump($decrypted); // 'abc123'
