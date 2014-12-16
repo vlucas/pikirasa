@@ -3,6 +3,16 @@ namespace Pikirasa;
 
 class RSA
 {
+    /*
+     * Minimum key size bits
+     */
+    const MINIMUM_KEY_SIZE = 128;
+
+    /*
+     * Default key size bits
+     */
+    const DEFAULT_KEY_SIZE = 2048;
+
     protected $publicKeyFile;
     protected $privateKeyFile;
     protected $password;
@@ -24,6 +34,56 @@ class RSA
         return $keyFile;
     }
 
+
+    /**
+     * Creates a new RSA key pair with the given key size
+     *
+     * @param bool $overwrite Overwrite existing key files
+     * @param null $keySize RSA Key Size in bits
+     * @return bool Resule of creation
+     *
+     * @throws Pikirasa\Exception
+     */
+    public function create($overwrite = false, $keySize = null)
+    {
+        $keySize = intval($keySize);
+        if (intval($keySize) < self::MINIMUM_KEY_SIZE) {
+            $keySize = self::DEFAULT_KEY_SIZE;
+        }
+
+        if (!$overwrite) {
+            if (file_exists($this->publicKeyFile) || file_exists($this->privateKeyFile)) {
+                throw new Exception("OpenSSL: Existing keys found. Remove keys or use \$overwrite argument.");
+            }
+        }
+
+        $config = array(
+            'private_key_bits' => $keySize,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA
+        );
+
+        $resource = openssl_pkey_new($config);
+        $pkey = openssl_pkey_get_details($resource);
+        $pkeyResource = fopen($this->publicKeyFile, 'w+');
+        $bytes = fwrite($pkeyResource, $pkey['key']);
+        fclose($pkeyResource);
+
+        if (strlen($pkey['key']) < 1 || $bytes != strlen($pkey['key'])) {
+            throw new Exception("OpenSSL: Error writing PUBLIC key.");
+        }
+
+        $private = '';
+        openssl_pkey_export($resource, $private, $this->password);
+        $pkeyResource = fopen($this->privateKeyFile, 'w+');
+        $bytes = fwrite($pkeyResource, $private);
+        fclose($pkeyResource);
+
+        if (strlen($private) < 1 || $bytes != strlen($private)) {
+            throw new Exception("OpenSSL: Error writing PRIVATE key.");
+        }
+
+        return true;
+    }
 
     /**
      * Set password to be used during encryption and decryption

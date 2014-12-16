@@ -114,4 +114,21 @@ class RSATest extends PHPUnit_Framework_TestCase
         $decrypted = $rsa->base64Decrypt($encrypted);
         $this->assertSame($decrypted, $data);
     }
+
+    public function testCreateAndEncrypt()
+    {
+        $tempPublicKeyFile = 'file://' . tempnam(sys_get_temp_dir(), get_class($this));
+        $tempPrivateKeyFile = 'file://' . tempnam(sys_get_temp_dir(), get_class($this));
+        $password = 'foobar';
+
+        $rsa = new RSA($tempPublicKeyFile, $tempPrivateKeyFile, $password);
+        $overwrite = true;
+        $success = $rsa->create($overwrite);
+        $this->assertTrue($success);
+
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $decrypted = $rsa->decrypt($encrypted);
+        $this->assertSame($decrypted, $data);
+    }
 }
