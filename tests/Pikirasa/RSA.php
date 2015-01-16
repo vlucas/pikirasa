@@ -5,8 +5,10 @@ class RSATest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->publicKeyFile = 'file://' . dirname(__DIR__) . '/fixtures/public2048.pem';
-        $this->privateKeyFile = 'file://' . dirname(__DIR__) . '/fixtures/private2048.pem';
+        $this->publicKeyPath  =  dirname(__DIR__) . '/fixtures/public2048.pem';
+        $this->privateKeyPath =  dirname(__DIR__) . '/fixtures/private2048.pem';
+        $this->publicKeyFile  = 'file://' . $this->publicKeyPath;
+        $this->privateKeyFile = 'file://' . $this->privateKeyPath;
 
         $this->publicPasswordKeyFile = 'file://' . dirname(__DIR__) . '/fixtures/public2048-password.pem';
         $this->privatePasswordKeyFile = 'file://' . dirname(__DIR__) . '/fixtures/private2048-password.pem';
@@ -15,6 +17,15 @@ class RSATest extends PHPUnit_Framework_TestCase
     public function testEncryptDecryptWithFile()
     {
         $rsa = new RSA($this->publicKeyFile, $this->privateKeyFile);
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $decrypted = $rsa->decrypt($encrypted);
+        $this->assertSame($decrypted, $data);
+    }
+
+    public function testEncryptDecryptWithPath()
+    {
+        $rsa = new RSA($this->publicKeyPath, $this->privateKeyPath);
         $data = 'abc123';
         $encrypted = $rsa->encrypt($data);
         $decrypted = $rsa->decrypt($encrypted);

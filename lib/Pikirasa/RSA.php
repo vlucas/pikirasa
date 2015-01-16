@@ -9,10 +9,21 @@ class RSA
 
     public function __construct($publicKeyFile, $privateKeyFile = null, $password = null)
     {
-        $this->publicKeyFile = $publicKeyFile;
-        $this->privateKeyFile = $privateKeyFile;
+        $this->publicKeyFile =  $this->fixKeyArgument($publicKeyFile);
+        $this->privateKeyFile = $this->fixKeyArgument($privateKeyFile);
         $this->password = $password;
     }
+
+    public function fixKeyArgument($keyFile)
+    {
+        if (strpos($keyFile, '/') === 0) {
+            // This looks like a path, let us prepend the file scheme
+            return 'file://' . $keyFile;
+        }
+
+        return $keyFile;
+    }
+
 
     /**
      * Set password to be used during encryption and decryption
