@@ -17,7 +17,7 @@ Example Usage
 
 All your need is the full path to your public and/or private key files:
 ```php
-$rsa = new Pikirasa\RSA('file://path/to/public.pem', 'file://path/to/private.pem');
+$rsa = new Pikirasa\RSA('path/to/public.pem', 'path/to/private.pem');
 
 $data = 'abc123';
 $encrypted = $rsa->encrypt($data);
@@ -25,7 +25,19 @@ $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
 
-You can also use the string contents of your public and private keys instead of a file stream location:
+Under the hood, Pikirasa will make these paths file streams, and you may use any
+file stream directly instead :
+
+```php
+$rsa = new Pikirasa\RSA('file:///absolute/path/to/public.pem', 'file://relative/path/to/private.pem');
+
+$data = 'abc123';
+$encrypted = $rsa->encrypt($data);
+$decrypted = $rsa->decrypt($encrypted);
+var_dump($decrypted); // 'abc123'
+```
+
+You can also use the string contents of your public and private keys :
 
 ```php
 $publicKey = '
