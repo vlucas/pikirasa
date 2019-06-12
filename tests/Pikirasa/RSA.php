@@ -115,7 +115,7 @@ class RSATest extends PHPUnit_Framework_TestCase
         $this->assertSame($decrypted, $data);
     }
 
-    public function testCreateAndEncrypt()
+    public function testCreateAndEncryptWithFile()
     {
         $tempPublicKeyFile = 'file://' . tempnam(sys_get_temp_dir(), get_class($this));
         $tempPrivateKeyFile = 'file://' . tempnam(sys_get_temp_dir(), get_class($this));
@@ -123,12 +123,42 @@ class RSATest extends PHPUnit_Framework_TestCase
 
         $rsa = new RSA($tempPublicKeyFile, $tempPrivateKeyFile, $password);
         $overwrite = true;
-        $success = $rsa->create($overwrite);
+        $success = $rsa->create(null, $overwrite);
         $this->assertTrue($success);
 
         $data = 'abc123';
         $encrypted = $rsa->encrypt($data);
         $decrypted = $rsa->decrypt($encrypted);
         $this->assertSame($decrypted, $data);
+
+        unlink($tempPublicKeyFile);
+        unlink($tempPrivateKeyFile);
+    }
+
+    public function testCreateAndEncryptWithString()
+    {
+        $password = 'foobar';
+
+        $rsa = new RSA(null, null, $password);
+        $success = $rsa->create();
+        $this->assertTrue($success);
+
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $decrypted = $rsa->decrypt($encrypted);
+        $this->assertSame($decrypted, $data);
+    }
+
+    public function testCreateAndRetrieveWithString()
+    {
+        $password = 'foobar';
+
+        $rsa = new RSA(null, null, $password);
+        $success = $rsa->create();
+        $this->assertTrue($success);
+
+        $this->assertNotEmpty($rsa->getPublicKeyFile());
+        $this->assertNotEmpty($rsa->getPrivateKeyFile());
+        $this->assertNotSame($rsa->getPublicKeyFile(), $rsa->getPrivateKeyFile());
     }
 }
