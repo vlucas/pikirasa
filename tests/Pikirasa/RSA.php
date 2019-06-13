@@ -122,8 +122,7 @@ class RSATest extends PHPUnit_Framework_TestCase
         $password = 'foobar';
 
         $rsa = new RSA($tempPublicKeyFile, $tempPrivateKeyFile, $password);
-        $overwrite = true;
-        $success = $rsa->create(null, $overwrite);
+        $success = $rsa->create(null, true);
         $this->assertTrue($success);
 
         $data = 'abc123';
@@ -141,6 +140,20 @@ class RSATest extends PHPUnit_Framework_TestCase
 
         $rsa = new RSA(null, null, $password);
         $success = $rsa->create();
+        $this->assertTrue($success);
+
+        $data = 'abc123';
+        $encrypted = $rsa->encrypt($data);
+        $decrypted = $rsa->decrypt($encrypted);
+        $this->assertSame($decrypted, $data);
+    }
+
+    public function testCreateAndEncryptWithKeysize()
+    {
+        $password = 'foobar';
+
+        $rsa = new RSA(null, null, $password);
+        $success = $rsa->create(4096);
         $this->assertTrue($success);
 
         $data = 'abc123';

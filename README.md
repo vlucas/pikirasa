@@ -1,21 +1,39 @@
-Pikirasa
-========
+# Pikirasa
+
+[![Build Status](https://travis-ci.org/vlucas/pikirasa.svg?branch=master)](https://travis-ci.org/vlucas/pikirasa)
+[![codecov](https://codecov.io/gh/vlucas/pikirasa/branch/master/graph/badge.svg)](https://codecov.io/gh/vlucas/pikirasa)
+
 Easy PKI public/private RSA key encryption using the OpenSSL extension.
 
-What's up with the name?
-------------------------
-Pikirasa is just "PKI RSA" with a few exta vowels thrown in. Also, I created this project late on a Friday night, so I just couldn't bring myself to name it anything serious.
+## What's up with the name?
 
-What is this for?
------------------
-Pikirasa is very lightweight wrapper around PHP's OpenSSL extension for encrypting and decrypting data with a known public/private key pair. It requires that you have the [OpenSSL extension](http://php.net/openssl) installed, and that your certificates have already been generated.
+Pikirasa is just "PKI RSA" with a few exta vowels thrown in. Also, I created
+this project late on a Friday night, so I just couldn't bring myself to name it
+anything serious.
 
-_Pikirasa is not a general purpose or all-encompassing encryption library_. If you need more encryption options or maximum system compatability, take a look at [phpseclib](https://github.com/phpseclib/phpseclib).
+## What is this for?
 
-Example Usage
--------------
+Pikirasa is very lightweight wrapper around PHP's OpenSSL extension for
+encrypting and decrypting data with a known public/private key pair. It requires
+that you have the [OpenSSL extension](http://php.net/openssl) installed, and
+that your certificates have already been generated.
+
+_Pikirasa is not a general purpose or all-encompassing encryption library_. If
+you need more encryption options or maximum system compatability, take a look at
+[phpseclib](https://github.com/phpseclib/phpseclib).
+
+## Installation
+
+Just fire up Composer!
+
+```bash
+composer require vlucas/pikirasa
+```
+
+## Example Usage
 
 All you need is the full path to your public and/or private key files:
+
 ```php
 $rsa = new Pikirasa\RSA('path/to/public.pem', 'path/to/private.pem');
 
@@ -90,6 +108,8 @@ $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
 
+### Creating keys
+
 Don't have key files already? No problem - you can simply create new ones :
 
 ```php
@@ -102,11 +122,14 @@ $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
 ```
 
-Need a key size other than the default of 2048 bits? Simply pass the size you need as the first parameter of `$rsa->create()`.
+Need a key size other than the default of 2048 bits? Simply pass the size you
+need as the first parameter of `$rsa->create()`.
 
-Pikirasa won't overwrite existing key files unless you pass `true` to the second parameter of `$rsa->create()`.
+Pikirasa won't overwrite existing key files unless you pass `true` to the second
+parameter of `$rsa->create()`.
 
-If you prefer to work with key strings over key files, you can create keys that way, too :
+If you prefer to work with key strings over key files, you can create keys that
+way, too :
 
 ```php
 $rsa = new Pikirasa\RSA(null, null);
@@ -117,7 +140,7 @@ $encrypted = $rsa->encrypt($data);
 $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted);
           // 'abc123'
-var_dump($publicKey);
+var_dump($rsa->getPublicKeyFile());
           // -----BEGIN PUBLIC KEY-----
           // MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7o9A47JuO3wgZ/lbOIOs
           // Xc6cVSiCMsrglvORM/54StFRvcrxMi7OjXD6FX5fQpUOQYZfIOFZZMs6kmNXk8xO
@@ -127,7 +150,7 @@ var_dump($publicKey);
           // UbUYN6PmMry35wCaFCfQoyTDUxBfxTGYqjaveQv4sxx0uvoiLXHt9cAm5Q8KJ+8d
           // FwIDAQAB
           // -----END PUBLIC KEY-----
-var_dump($privateKey);
+var_dump($rsa->getPrivateKeyFile());
           // -----BEGIN RSA PRIVATE KEY-----
           // MIIEpAIBAAKCAQEA7o9A47JuO3wgZ/lbOIOsXc6cVSiCMsrglvORM/54StFRvcrx
           // Mi7OjXD6FX5fQpUOQYZfIOFZZMs6kmNXk8xOhgTmdMJcBWolQ85acfAdWpTpCW29
@@ -157,10 +180,10 @@ var_dump($privateKey);
           // -----END RSA PRIVATE KEY-----
 ```
 
-### Using Certificates with a Passphrase
+### Using Keys with a Passphrase
 
-The `Pikirasa\RSA` class accepts an optional 3rd parameter if your private key
-is protected with a password.
+The `Pikirasa\RSA` class constructor accepts an optional 3rd parameter if your
+private key is protected with a password.
 
 ```php
 $rsa = new Pikirasa\RSA($publicKey, $privateKey, 'certificate_password');
@@ -169,6 +192,22 @@ $data = 'abc123';
 $encrypted = $rsa->encrypt($data);
 $decrypted = $rsa->decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
+```
+
+This approach also works when creating new keys that should be password
+protected :
+
+```php
+$rsa = new Pikirasa\RSA($publicKey, $privateKey, 'certificate_password');
+$rsa->create(); // creates new keys, with the private key password-protected
+
+$data = 'abc123';
+$encrypted = $rsa->encrypt($data);
+$decrypted = $rsa->decrypt($encrypted);
+var_dump($decrypted); // 'abc123'
+
+$rsa2 = new Pikirasa\RSA($publicKey, $privateKey);
+$decrypted = $rsa2->decrypt($encrypted); // Throws `Pikirasa\Exception` for bad/missing password
 ```
 
 ### Working with base64-encoded strings
@@ -184,3 +223,4 @@ $data = 'abc123';
 $encrypted = $rsa->base64Encrypt($data);
 $decrypted = $rsa->base64Decrypt($encrypted);
 var_dump($decrypted); // 'abc123'
+```
